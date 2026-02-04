@@ -1,1 +1,10 @@
 project_id = "zojodforstncihitgqgd"
+
+[functions.analyze-url]
+verify_jwt = false
+
+[functions.analyze-email]
+verify_jwt = false
+
+[functions.analyze-logo]
+verify_jwt = false
