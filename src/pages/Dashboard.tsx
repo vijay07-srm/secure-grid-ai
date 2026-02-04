@@ -1,11 +1,11 @@
 import { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Shield, ShieldCheck, ShieldAlert, AlertTriangle, Download, RefreshCw } from "lucide-react";
+import { Shield, ShieldCheck, ShieldAlert, AlertTriangle, Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { CyberBackground } from "@/components/CyberBackground";
 import { Navbar } from "@/components/Navbar";
-import { ScanInput } from "@/components/ScanInput";
+import { ScanTabs } from "@/components/ScanTabs";
 import { ScanResult } from "@/components/ScanResult";
 import { ScanHistory } from "@/components/ScanHistory";
 import { StatsCard } from "@/components/StatsCard";
@@ -121,14 +121,14 @@ export default function Dashboard() {
             <StatsCard icon={AlertTriangle} value={suspiciousCount} label="Suspicious" delay={0.4} />
           </motion.div>
 
-          {/* Scan Input */}
+          {/* Scan Tabs - URL, Email, Logo */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
             className="mb-8"
           >
-            <ScanInput onScan={analyzeUrl} isLoading={isLoading} />
+            <ScanTabs onUrlScan={analyzeUrl} isLoading={isLoading} userId={user?.id} />
           </motion.div>
 
           {/* Current Result */}
