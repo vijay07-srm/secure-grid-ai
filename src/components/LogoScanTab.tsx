@@ -11,7 +11,7 @@ import { toast } from "sonner";
 
 interface LogoScanResult {
   imageUrl: string;
-  result: "safe" | "phishing";
+  result: "safe" | "phishing" | "unknown";
   confidence: number;
   detectedBrand: string | null;
   threatIndicators: string[];
@@ -127,18 +127,22 @@ export function LogoScanTab({ onScanComplete, userId }: LogoScanTabProps) {
       setResult(data);
       onScanComplete?.(data);
 
-      if (data.result === "phishing") {
+        if (data.result === "phishing") {
         toast.error("⚠️ LOGO PHISHING DETECTED!", {
           description: data.detectedBrand
             ? `Fake ${data.detectedBrand} logo identified`
             : "Suspicious logo detected",
         });
-      } else {
+        } else if (data.result === "safe") {
         toast.success("✓ Logo appears authentic", {
           description: data.detectedBrand
             ? `${data.detectedBrand} logo verified`
             : "No phishing indicators found",
         });
+        } else {
+          toast.info("⚡ Logo unknown", {
+            description: "Insufficient signals to verify authenticity",
+          });
       }
     } catch (error) {
       const message = error instanceof Error ? error.message : "Analysis failed";
@@ -279,6 +283,8 @@ export function LogoScanTab({ onScanComplete, userId }: LogoScanTabProps) {
             className={`glass-card border-2 ${
               result.result === "phishing"
                 ? "border-destructive/50 bg-destructive/5"
+                : result.result === "unknown"
+                ? "border-warning/50 bg-warning/5"
                 : "border-safe/50 bg-safe/5"
             }`}
           >
@@ -287,6 +293,8 @@ export function LogoScanTab({ onScanComplete, userId }: LogoScanTabProps) {
                 <CardTitle className="flex items-center gap-2">
                   {result.result === "phishing" ? (
                     <AlertTriangle className="h-6 w-6 text-destructive animate-pulse" />
+                  ) : result.result === "unknown" ? (
+                    <Shield className="h-6 w-6 text-warning" />
                   ) : (
                     <CheckCircle className="h-6 w-6 text-safe" />
                   )}
@@ -294,17 +302,25 @@ export function LogoScanTab({ onScanComplete, userId }: LogoScanTabProps) {
                     className={
                       result.result === "phishing"
                         ? "text-destructive"
+                        : result.result === "unknown"
+                        ? "text-warning"
                         : "text-safe"
                     }
                   >
                     {result.result === "phishing"
                       ? "LOGO PHISHING DETECTED"
+                      : result.result === "unknown"
+                      ? "LOGO UNKNOWN"
                       : "LOGO APPEARS AUTHENTIC"}
                   </span>
                 </CardTitle>
                 <Badge
                   variant={
-                    result.result === "phishing" ? "destructive" : "default"
+                    result.result === "phishing"
+                      ? "destructive"
+                      : result.result === "unknown"
+                      ? "secondary"
+                      : "default"
                   }
                   className="text-lg px-4 py-1"
                 >
@@ -325,6 +341,8 @@ export function LogoScanTab({ onScanComplete, userId }: LogoScanTabProps) {
                   className={`h-3 ${
                     result.result === "phishing"
                       ? "[&>div]:bg-destructive"
+                      : result.result === "unknown"
+                      ? "[&>div]:bg-warning"
                       : "[&>div]:bg-safe"
                   }`}
                 />
